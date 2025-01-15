@@ -1,7 +1,7 @@
 const path = require('path');
 const { run: jscodeshift } = require('jscodeshift/src/Runner');
 
-const transformPath = path.join(__dirname, 'transform.js');
+const transformPath = path.join(__dirname, 'transform/index.js');
 
 // node src/index.js path-to-migrate
 const args = process.argv.slice(2);
