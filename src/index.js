@@ -13,7 +13,7 @@ if(args.length === 0) {
 
 const sourcePath = args[0];
 
-async function main() {
+const main = async () => {
     try {
         const result = await jscodeshift(
             transformPath,
@@ -27,11 +27,12 @@ async function main() {
                 parser: 'flow'
             }
         )
-        
-        console.log(`Migration completed: ${result}`);
+        console.log('Migration completed');
+        console.dir(result);
     }
     catch(error) {
-        console.error(`Migration failed: ${error}`);
+        console.error('Migration failed');
+        console.dir(error);
     }
 }
 
