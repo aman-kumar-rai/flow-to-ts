@@ -2,9 +2,16 @@ const flowToTSMigrater = (file, api) => {
     const j = api.jscodeshift;
     const root = j(file.source);
 
-    // Remove flow pragma
-    root.find(j.comment)
-    .filter(path => path.value.value.includes('@flow'))
+    root.find(j.Comment)
+    .filter(path => {
+        const comment = path.value.value.trim();
+        return (
+            comment === '@flow' ||
+            comment === '* @flow' ||
+            comment.startsWith('@flow ') ||
+            comment.startsWith('* @flow ')
+        );
+    })
     .remove();
 
     return root.toSource();
