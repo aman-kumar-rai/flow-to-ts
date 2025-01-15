@@ -1,0 +1,19 @@
+{
+  "name": "flow-to-ts",
+  "version": "1.0.0",
+  "description": "A command-line tool that automatically converts Flow type annotations to TypeScript using JSCodeshift.",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-aman-kumar-rai:aman-kumar-rai/flow-to-ts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jscodeshift": "^17.1.2"
+  }
+}
