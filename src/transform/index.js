@@ -1,7 +1,10 @@
+const { convertFlowType } = require('../utils/index');
+
 const flowToTSMigrater = (file, api) => {
     const j = api.jscodeshift;
     const root = j(file.source);
 
+    // Remove flow pragma and suppression comments
     root.find(j.Comment)
     .filter(path => {
         const comment = path.value.value.trim();
@@ -23,6 +26,15 @@ const flowToTSMigrater = (file, api) => {
         );
     })
     .remove();
+
+
+    // Convert type annotations on variable declarations
+    root.find(j.TypeAnnotation)
+    .replaceWith(path => {
+        return j.tsTypeAnnotation(
+            convertFlowType(j, path.node.typeAnnotation)
+        );
+    });
 
     return root.toSource();
 }
