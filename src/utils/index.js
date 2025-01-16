@@ -31,9 +31,49 @@ const convertFlowType = (j, flowType) => {
         case 'EmptyTypeAnnotation':
             return j.tsNeverKeyword(); // Flow's empty -> TypeScript's never
 
+        // Complex types
+        case 'NullableTypeAnnotation':
+            return j.tsUnionType([
+                convertFlowType(j, flowType.typeAnnotation),
+                j.tsNullKeyword()
+            ]);
+
+        case 'ArrayTypeAnnotation':
+            return j.tsArrayType(
+                convertFlowType(j, flowType.elementType)
+            );
+
+        case 'UnionTypeAnnotation':
+            return j.tsUnionType(
+                flowType.types.map(t => convertFlowType(j, t))
+            );
+
+        case 'GenericTypeAnnotation':
+            if (flowType.id.name === 'Object') {
+                return j.tsObjectKeyword();
+            }
+            return j.tsTypeReference(
+                j.identifier(flowType.id.name),
+                flowType.typeParameters ? j.tsTypeParameterInstantiation(
+                    flowType.typeParameters.params.map(p => convertFlowType(j, p))
+                ) : null
+            );
+
+        case 'ObjectTypeAnnotation':
+            return j.tsTypeLiteral(
+                flowType.properties.map(p => {
+                    if (p.type === 'ObjectTypeProperty') {
+                        return j.tsPropertySignature(
+                            p.key,
+                            j.tsTypeAnnotation(convertFlowType(j, p.value))
+                        );
+                    }
+                    return p;
+                })
+            );
+
 
         default:
-            console.dir(flowType);
             console.warn(`Unhandled Flow type: ${flowType.type}`);
             return j.tsAnyKeyword();
     }
